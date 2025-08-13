@@ -69,7 +69,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(result))
-	w.Write([]byte("\n"))
-	w.Write([]byte("Conversion result also saved in: " + fileName))
+	w.Write([]byte(result + "\nConversion result also saved in: " + fileName))
 }
