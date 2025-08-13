@@ -27,18 +27,17 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
 	w.Write(data)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		log.Println("Error parsing form:", err)
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
 	}
+
 	file, _, err := r.FormFile("myFile")
 	if err != nil {
 		log.Println("Error getting the file:", err)
@@ -61,18 +60,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := os.MkdirAll("uploads", os.ModePerm); err != nil {
-		log.Println("Error creating uploads directory:", err)
-		http.Error(w, "Error creating uploads directory", http.StatusInternalServerError)
-		return
-	}
-
+	os.MkdirAll("uploads", os.ModePerm)
 	fileName := filepath.Join("uploads", time.Now().UTC().Format("2006-01-02_15-04-05")+".txt")
-	if err := os.WriteFile(fileName, []byte(result), 0644); err != nil {
+	err = os.WriteFile(fileName, []byte(result), 0644)
+	if err != nil {
 		log.Println("Error writing to file:", err)
 		http.Error(w, "Error saving the conversion result", http.StatusInternalServerError)
 		return
 	}
 
-	w.Write([]byte("Conversion result saved in: " + fileName))
+	w.Write([]byte(result))
+	w.Write([]byte("\n"))
+	w.Write([]byte("Conversion result also saved in: " + fileName))
 }
