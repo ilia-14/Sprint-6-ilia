@@ -12,22 +12,7 @@ import (
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	filePath, err := filepath.Abs("index.html")
-	if err != nil {
-		log.Println("Error locating file:", err)
-		http.Error(w, "Error locating file", http.StatusInternalServerError)
-		return
-	}
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Println("Error loading page:", err)
-		http.Error(w, "Error loading page", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write(data)
+	http.ServeFile(w, r, "./index.html")
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +46,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	os.MkdirAll("uploads", os.ModePerm)
+	if err != nil {
+		log.Println("Error creating uploads directory:", err)
+		http.Error(w, "Error creating uploads directory", http.StatusInternalServerError)
+		return
+	}
+
 	fileName := filepath.Join("uploads", time.Now().UTC().Format("2006-01-02_15-04-05")+".txt")
 	err = os.WriteFile(fileName, []byte(result), 0644)
 	if err != nil {
@@ -69,5 +60,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(result + "\nConversion result also saved in: " + fileName))
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
+	res, err := w.Write([]byte(result))
+	if err != nil {
+		log.Println("Error writing response:", err)
+		http.Error(w, "Error sending response", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("Sent %d bytes of data to client", res)
 }

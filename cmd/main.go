@@ -13,6 +13,9 @@ func main() {
 
 	app := server.NewServer(logger)
 
+	// Логируем старт сервера
+	logger.Printf("Сервер запущен на адресе: %s\n", app.Addr)
+
 	err := app.ListenAndServe()
 	if err != nil {
 		logger.Fatal(err)
