@@ -46,11 +46,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	os.MkdirAll("uploads", os.ModePerm)
-	if err != nil {
-		log.Println("Error creating uploads directory:", err)
-		http.Error(w, "Error creating uploads directory", http.StatusInternalServerError)
-		return
-	}
+	//if err != nil {
+	//	log.Println("Error creating uploads directory:", err)
+	//	http.Error(w, "Error creating uploads directory", http.StatusInternalServerError)
+	//	return
+	//}
 
 	fileName := filepath.Join("uploads", time.Now().UTC().Format("2006-01-02_15-04-05")+".txt")
 	err = os.WriteFile(fileName, []byte(result), 0644)

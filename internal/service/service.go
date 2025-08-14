@@ -17,13 +17,11 @@ func AutoConvert(input string) (string, error) {
 	}
 
 	var result string
-	var err error
 
 	if isMorseCode {
-		result, err = morse.ToText(input)
+		result = morse.ToText(input)
 	} else {
-		result, err = morse.ToMorse(input)
+		result = morse.ToMorse(input)
 	}
-
-	return result, err
+	return result, nil
 }
