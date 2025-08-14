@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Создаем логгер
-	logger := log.New(os.Stdout, "myapp: ", log.LstdFlags)
+	logger := log.New(os.Stdout, "myapp:", log.LstdFlags)
 
 	app := server.NewServer(logger)
 
